@@ -1,0 +1,39 @@
+version: '3'
+
+networks:
+  dayoff_marker:
+    driver: bridge
+
+services:
+  redis:
+    image: docker.io/bitnami/redis:latest
+    container_name: inside_database_redis_dev
+    hostname: inside_database_redis_dev
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - dayoff_marker
+    ports:
+      - '6379:6379'
+  redis-sentinel-dev:
+    image: docker.io/bitnami/redis-sentinel:latest
+    container_name: inside_database_sentinel_dev
+    hostname: inside_database_sentinel_dev
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    environment:
+      - REDIS_MASTER_HOST=localhost
+      - REDIS_MASTER_PASSWORD=:Ka9vFBg&5y2W$h44(.$
+      - REDIS_MASTER_SET=InsideSoftwares
+    ports:
+      - '26379:26379'
+    networks:
+      - dayoff_marker

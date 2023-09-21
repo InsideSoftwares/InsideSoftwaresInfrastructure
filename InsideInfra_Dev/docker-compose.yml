@@ -1,0 +1,77 @@
+version: '3'
+
+networks:
+  dayoff_marker:
+    driver: bridge
+
+services:
+  inside_cloudconfig:
+    image: br.com.insidesoftwares/inside_cloudconfig:1.0-SNAPSHOT
+    container_name: inside_cloudconfig_dev
+    hostname: insidecloudconfig
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    volumes:
+      - ./logs:/opt/inside/logs
+      - ./properties:/opt/inside/configuration
+    environment:
+      - CLOUD_CONFIG_PORT=9000
+      - CLOUD_CONFIG_PROFILES=native
+      - CLOUD_CONFIG_NAME=INSIDE_CLOUD_ADMIN
+      - CLOUD_CONFIG_PASSWORD=Inside@Admin#2023
+      - CLOUD_CONFIG_SEARCH_LOCATIONS=/opt/inside/configuration
+      - CLOUD_CONFIG_KEY=WcntY£$NB*5|627
+      - LOGBACK_LOG_DIR=/opt/inside/logs
+    networks:
+      - dayoff_marker
+    ports:
+      - '9000:9000'
+  inside_cloudadmin:
+    image: br.com.insidesoftwares/inside_cloudadmin:1.0-SNAPSHOT
+    container_name: inside_cloudadmin_dev
+    hostname: insidecloudadmin
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    volumes:
+      - ./logs:/opt/inside/logs
+    environment:
+      - CLOUD_ADMIN_PORT=9001
+      - CLOUD_ADMIN_PROFILES=native
+      - CLOUD_CONFIG_URI=http://insidecloudconfig:9000
+      - CLOUD_CONFIG_NAME=INSIDE_CLOUD_ADMIN
+      - CLOUD_CONFIG_PASSWORD=Inside@Admin#2023
+      - LOGBACK_LOG_DIR=/opt/inside/logs
+    networks:
+      - dayoff_marker
+    ports:
+      - '9001:9001'
+  inside_cloudgateway:
+    image: br.com.insidesoftwares/inside_cloudgateway:1.0-SNAPSHOT
+    container_name: inside_cloudgateway_dev
+    hostname: insidecloudgateway
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    volumes:
+      - ./logs:/opt/inside/logs
+    environment:
+      - CLOUD_GATEWAY_PORT=9010
+      - CLOUD_GATEWAY_PROFILES=native
+      - CLOUD_CONFIG_URI=http://insidecloudconfig:9000
+      - CLOUD_CONFIG_NAME=INSIDE_CLOUD_ADMIN
+      - CLOUD_CONFIG_PASSWORD=Inside@Admin#2023
+      - CLOUD_ADMIN_URL=http://insidecloudadmin:9001/admin
+      - CLOUD_EUREKA_URL=http://insidecloudadmin:9001/eureka
+      - LOGBACK_LOG_DIR=/opt/inside/logs
+    networks:
+      - dayoff_marker
+    ports:
+      - '9010:9010'

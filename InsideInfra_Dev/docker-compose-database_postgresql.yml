@@ -1,0 +1,25 @@
+version: '3'
+
+networks:
+  dayoff_marker:
+    driver: bridge
+
+services:
+  postgresql:
+    image: docker.io/bitnami/postgresql:latest
+    container_name: inside_database_postgresql_dev
+    hostname: inside_database_postgresql_dev
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+    environment:
+      - POSTGRESQL_USERNAME=InsideSoftwaresAdmin
+      - POSTGRESQL_PASSWORD=pe&X=RwN&@!H7%mB
+      - POSTGRESQL_DATABASE=InsideSoftwares
+      - POSTGRESQL_POSTGRES_PASSWORD=pe&X=RwN&@!H7%mB
+    networks:
+      - dayoff_marker
+    ports:
+      - '5432:5432'

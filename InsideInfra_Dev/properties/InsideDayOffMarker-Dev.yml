@@ -1,0 +1,135 @@
+server:
+  port: 0
+
+logging:
+  exception-conversion-word:
+  level:
+    liquibase: INFO
+    root: INFO
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+
+spring:
+  cache:
+    enable: true
+    type: redis
+    redis:
+      key-prefix: 'api::'
+      time-to-live: 12000000
+  data:
+    redis:
+      repositories:
+        enabled: false
+      port: 26379
+      password: '{cipher}ee350459afc884c66fe398edca0bdfcb9b6275c155af18beb3ecfd11c020da65e7add3f07145c42acbb4e83ea9e219f4'
+      sentinel:
+        database: 0
+        master: InsideSoftwares
+        nodes: localhost
+        password: '{cipher}ee350459afc884c66fe398edca0bdfcb9b6275c155af18beb3ecfd11c020da65e7add3f07145c42acbb4e83ea9e219f4'
+  datasource:
+    url: jdbc:postgresql://localhost:5432/InsideSoftwares
+    username: InsideSoftwaresAdmin
+    password: '{cipher}8d0c375430ca0b826d83830c27749e779d3d380f34742f9c3aef54ce93d4df7a31475d70dfc4fca144bc58a66594a93e'
+    hikari:
+      connection-timeout: 5000
+      idle-timeout: 150000
+      max-lifetime: 300000
+      minimum-idle: 10
+      maximum-pool-size: 50
+    audit:
+      url: jdbc:postgresql://localhost:5432/InsideSoftwares
+      username: InsideSoftwaresAdmin
+      password: '{cipher}8d0c375430ca0b826d83830c27749e779d3d380f34742f9c3aef54ce93d4df7a31475d70dfc4fca144bc58a66594a93e'
+      hikari:
+        connection-timeout: 5000
+        idle-timeout: 150000
+        max-lifetime: 300000
+        minimum-idle: 10
+        maximum-pool-size: 50
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        enable_lazy_load_no_trans: true
+        ddl-auto: none
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        naming:
+          implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+          physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: DayOffMarker
+            authorization-grant-type: password
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:7080/realms/InsideSoftwares
+            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:7080/realms/InsideSoftwares
+
+jwt:
+  auth:
+    converter:
+      resourceId: "DayOffMarker"
+      principalAttribute: "preferred_username"
+
+insidesoftwares-cache:
+  config:
+    timeToLiveSeconds: 3600
+    caches:
+      -  name: DAYOFF_MARKER_CITY
+         timeToLiveSeconds: 3600
+      -  name: DAYOFF_MARKER_COUNTRY
+         timeToLiveSeconds: 3600
+      -  name: DAYOFF_MARKER_FIXEDHOLIDAY
+         timeToLiveSeconds: 3600
+      -  name: DAYOFF_MARKER_HOLIDAY
+         timeToLiveSeconds: 3600
+      -  name: DAYOFF_MARKER_STATE
+         timeToLiveSeconds: 3600
+      -  name: DAYOFF_MARKER_TAG
+         timeToLiveSeconds: 3600
+      -  name: DAYOFF_MARKER_WORKING
+         timeToLiveSeconds: 3600
+
+jdempotent:
+  enable: true
+  cache:
+    redis:
+      database: 1
+      password: '{cipher}ee350459afc884c66fe398edca0bdfcb9b6275c155af18beb3ecfd11c020da65e7add3f07145c42acbb4e83ea9e219f4'
+      sentinelHostList: localhost
+      sentinelPort: "26379"
+      sentinelMasterName: "InsideSoftwares"
+      expirationTimeHour: 2
+      dialTimeoutSecond: 3
+      readTimeoutSecond: 3
+      writeTimeoutSecond: 3
+      maxRetryCount: 3
+      expireTimeoutHour: 3
+  cryptography:
+    algorithm: md5
+
+insidesoftwares:
+  filter:
+    show-request-body: false
+    show-request-headers: false
+    show-response-body: false
+  audit:
+    system: DAYOFF_MARKER
+    enable: true

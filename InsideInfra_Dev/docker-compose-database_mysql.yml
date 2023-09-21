@@ -1,0 +1,25 @@
+version: '3'
+
+networks:
+  dayoff_marker:
+    driver: bridge
+
+services:
+  mysql:
+    image: docker.io/bitnami/mysql:latest
+    container_name: inside_database_mysql_dev
+    hostname: inside_database_mysql_dev
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+    environment:
+      - MYSQL_ROOT_USER=InsideSoftwaresAdmin
+      - MYSQL_ROOT_PASSWORD=pe&X=RwN&@!H7%mB
+      - MYSQL_DATABASE=InsideSoftwares
+      - MYSQL_AUTHENTICATION_PLUGIN=mysql_native_password
+    networks:
+      - dayoff_marker
+    ports:
+      - '3306:3306'
